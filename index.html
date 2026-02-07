@@ -1577,7 +1577,7 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <a href="#" class="logo" onclick="showMainContent()">
+        <a href="/" class="logo">
             <div class="logo-icon"><img src="logo_apartment.png" alt="Homio"></div>
             <span class="logo-text">Homio</span>
         </a>
@@ -1586,7 +1586,7 @@
             <li><a href="#features" data-vi="Tính năng" data-en="Features">Tính năng</a></li>
             <li><a href="#testimonials" data-vi="Đánh giá" data-en="Reviews">Đánh giá</a></li>
             <li><a href="#contact" data-vi="Liên hệ" data-en="Contact">Liên hệ</a></li>
-            <li><a href="policy.html" data-vi="Chính sách" data-en="Privacy">Chính sách</a></li>
+            <li><a href="/policy" data-vi="Chính sách" data-en="Privacy">Chính sách</a></li>
             <li>
                 <div class="lang-switcher">
                     <button class="lang-btn active" onclick="switchLanguage('vi')">VI</button>
@@ -1612,7 +1612,7 @@
             <li><a href="#testimonials" onclick="toggleMobileMenu()" data-vi="Đánh giá" data-en="Reviews">Đánh giá</a>
             </li>
             <li><a href="#contact" onclick="toggleMobileMenu()" data-vi="Liên hệ" data-en="Contact">Liên hệ</a></li>
-            <li><a href="policy.html" onclick="toggleMobileMenu();" data-vi="Chính sách"
+            <li><a href="/policy" onclick="toggleMobileMenu();" data-vi="Chính sách"
                     data-en="Privacy">Chính sách</a></li>
             <li><a href="#download" class="nav-btn" onclick="toggleMobileMenu()" data-vi="Dùng Thử"
                     data-en="Try Free">Dùng Thử</a></li>
@@ -2149,7 +2149,7 @@
         <footer class="footer">
             <div class="footer-grid">
                 <div class="footer-about">
-                    <a href="#" class="logo">
+                    <a href="/" class="logo">
                         <div class="logo-icon"><img src="logo_apartment.png" alt="Homio"></div>
                         <span class="logo-text">Homio</span>
                     </a>
@@ -2181,7 +2181,7 @@
                     <ul>
                         <li><a href="#" data-vi="Về chúng tôi" data-en="About Us">Về chúng tôi</a></li>
                         <li><a href="#">Blog</a></li>
-                        <li><a href="policy.html" data-vi="Chính sách bảo mật"
+                        <li><a href="/policy" data-vi="Chính sách bảo mật"
                                 data-en="Privacy Policy">Chính sách bảo mật</a></li>
                         <li><a href="#" data-vi="Điều khoản" data-en="Terms">Điều khoản</a></li>
                     </ul>
@@ -2360,13 +2360,10 @@
                     e.preventDefault();
                     const target = document.querySelector(href);
                     if (target) {
-                        showMainContent();
-                        setTimeout(() => {
-                            target.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }, 100);
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
                     }
                 }
             });
