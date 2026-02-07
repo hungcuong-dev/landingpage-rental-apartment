@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homio - Giải Pháp Quản Lý Căn Hộ Thông Minh</title>
+    <link rel="icon" type="image/png" href="logo_apartment.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #42A5F5;
+            --primary-dark: #1E88E5;
+            --primary-light: #90CAF9;
+            --primary-hover: #2D6A9D;
+            --secondary: #2D3436;
+            --text: #636E72;
+            --light: #F8F9FA;
+            --white: #FFFFFF;
+            --gradient: linear-gradient(135deg, #42A5F5 0%, #90CAF9 100%);
+            --gradient-dark: linear-gradient(135deg, #2D3436 0%, #4A5568 100%);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 15px 5%;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--secondary);
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--light);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .lang-btn {
+            padding: 5px 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 15px;
+            font-family: inherit;
+            font-weight: 500;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(66, 165, 245, 0.1);
+            color: var(--primary-dark);
+        }
+
+        .nav-btn {
+            background: var(--gradient);
+            color: var(--white);
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(66, 165, 245, 0.4);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--secondary);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 100px 5%;
+            background: linear-gradient(135deg, #E3F2FD 0%, #fff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: var(--gradient);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+            animation: fadeInLeft 1s ease;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(66, 165, 245, 0.1);
+            color: var(--primary);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            color: var(--secondary);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: var(--text);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--white);
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(66, 165, 245, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--secondary);
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 2px solid var(--secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .stat-item p {
+            font-size: 0.9rem;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            animation: fadeInRight 1s ease;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .phone-mockup {
+            position: relative;
+            z-index: 2;
+        }
+
+        .phone-mockup img {
+            width: 380px;
+            filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.2));
+            animation: float 3s ease-in-out infinite;
+            border-radius: 30px;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .phone-mockup-secondary {
+            position: absolute;
+            right: -60px;
+            top: 80px;
+        }
+
+        .phone-mockup-secondary img {
+            width: 330px;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
+            animation: float 3s ease-in-out infinite 0.5s;
+            border-radius: 25px;
+        }
+
+        .floating-card {
+            position: absolute;
+            background: var(--white);
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: floatCard 4s ease-in-out infinite;
+            min-width: 180px;
+        }
+
+        @keyframes floatCard {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(2deg);
+            }
+        }
+
+        .floating-card.card-1 {
+            top: 10%;
+            left: 0;
+            animation-delay: 0s;
+        }
+
+        .floating-card.card-2 {
+            top: 0;
+            right: -30px;
+            animation-delay: 1s;
+        }
+
+        .floating-card.card-3 {
+            bottom: 12%;
+            left: -30px;
+            animation-delay: 2s;
+            z-index: 3;
+        }
+
+        .floating-card-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .floating-card i {
+            color: var(--primary);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .floating-card-text span {
+            font-weight: 600;
+            color: var(--secondary);
+            display: block;
+            white-space: nowrap;
+        }
+
+        .floating-card-text small {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        /* Two Apps Section */
+        .two-apps {
+            padding: 100px 5%;
+            background: var(--white);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: var(--gradient);
+            color: var(--white);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .section-header p {
+            color: var(--text);
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .app-card {
+            background: var(--light);
+            border-radius: 30px;
+            padding: 50px 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-card.landlord {
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        .app-card.landlord .app-card-icon {
+            background: var(--gradient);
+        }
+
+        .app-card.landlord .app-card-icon i {
+            color: var(--white);
+        }
+
+        .app-card.resident {
+            background: var(--gradient);
+            color: var(--white);
+        }
+
+        .app-card.resident .app-card-icon {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .app-card-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .app-card-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .app-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .app-card .app-subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .app-card p {
+            opacity: 0.9;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+
+        .app-features-list {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .app-features-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .app-features-list li i {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .app-card-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--white);
+            color: var(--primary-dark);
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .app-card-btn:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 30px rgba(66, 165, 245, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 5%;
+            background: linear-gradient(135deg, #E3F2FD 0%, #fff 50%, #E3F2FD 100%);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .feature-icon i {
+            font-size: 1.8rem;
+            color: var(--white);
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 100px 5%;
+            background: var(--white);
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .step-card {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            text-align: center;
+            padding: 40px 25px;
+            position: relative;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-card:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 60px;
+            right: -15%;
+            width: 30%;
+            height: 3px;
+            background: var(--primary);
+            opacity: 0.3;
+        }
+
+        .step-card h3 {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .step-card p {
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        /* Benefits Section */
+        .benefits {
+            padding: 100px 5%;
+            background: var(--primary-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .benefits::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="%23ffffff" stroke-width="0.5" opacity="0.1"/></svg>') repeat;
+            opacity: 0.5;
+        }
+
+        .benefits .section-header h2,
+        .benefits .section-header p {
+            color: var(--white);
+        }
+
+        .benefits .section-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .benefit-card {
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .benefit-icon {
+            width: 90px;
+            height: 90px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            transition: transform 0.3s;
+        }
+
+        .benefit-card:hover .benefit-icon {
+            transform: scale(1.1);
+        }
+
+        .benefit-icon i {
+            font-size: 2rem;
+            color: var(--white);
+        }
+
+        .benefit-card h3 {
+            color: var(--white);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .benefit-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 100px 5%;
+            background: var(--light);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--white);
+            padding: 50px 40px;
+            border-radius: 25px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .pricing-card.featured {
+            background: var(--primary-dark);
+            color: var(--white);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient);
+            color: var(--white);
+            padding: 8px 25px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .pricing-card.featured h3 {
+            color: var(--white);
+        }
+
+        .pricing-card h3:not(.featured h3) {
+            color: var(--secondary);
+        }
+
+        .pricing-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 20px 0;
+        }
+
+        .pricing-card:not(.featured) .pricing-price {
+            color: var(--primary);
+        }
+
+        .pricing-card.featured .pricing-price {
+            color: var(--primary-light);
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pricing-card.featured .pricing-features li {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .pricing-features li i {
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .pricing-card.featured .pricing-features li i {
+            color: var(--primary-light);
+        }
+
+        .pricing-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:not(.featured) .pricing-btn {
+            background: var(--gradient);
+            color: var(--white);
+        }
+
+        .pricing-card.featured .pricing-btn {
+            background: var(--white);
+            color: var(--primary-dark);
+        }
+
+        .pricing-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(66, 165, 245, 0.4);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 5%;
+            background: var(--white);
+        }
+
+        .testimonials-slider {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .testimonial-card {
+            background: var(--light);
+            padding: 50px;
+            border-radius: 25px;
+            text-align: center;
+            display: none;
+        }
+
+        .testimonial-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .testimonial-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 25px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--white);
+        }
+
+        .testimonial-text {
+            font-size: 1.15rem;
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .testimonial-author h4 {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .testimonial-author p {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .testimonial-stars {
+            color: #FFC107;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .testimonial-nav button {
+            width: 50px;
+            height: 50px;
+            border: none;
+            background: var(--white);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial-nav button:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .testimonial-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .testimonial-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .testimonial-dots span.active {
+            background: var(--primary);
+            width: 30px;
+            border-radius: 20px;
+        }
+
+        /* Download Section */
+        .download {
+            padding: 100px 5%;
+            background: linear-gradient(135deg, #E3F2FD 0%, #fff 50%, #E3F2FD 100%);
+        }
+
+        .download-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .download-app {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .download-app:hover {
+            transform: translateY(-10px);
+        }
+
+        .download-app.landlord-app {
+            border: 3px solid var(--secondary);
+        }
+
+        .download-app.resident-app {
+            border: 3px solid var(--primary);
+        }
+
+        .download-app-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            overflow: hidden;
+        }
+
+        .download-app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .download-app h3 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .download-app p {
+            color: var(--text);
+            margin-bottom: 25px;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .store-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .store-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .store-btn i {
+            font-size: 1.5rem;
+        }
+
+        .store-btn div {
+            text-align: left;
+        }
+
+        .store-btn small {
+            font-size: 0.65rem;
+            opacity: 0.8;
+        }
+
+        .store-btn span {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 100px 5%;
+            background: var(--white);
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .contact-info h3 {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .contact-info p {
+            color: var(--text);
+            margin-bottom: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .contact-item i {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+
+        .contact-item div h4 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .contact-item div p {
+            margin: 0;
+            color: var(--text);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .social-links a {
+            width: 45px;
+            height: 45px;
+            background: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .contact-form {
+            background: var(--light);
+            padding: 40px;
+            border-radius: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--secondary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--white);
+            border-radius: 15px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: var(--white);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--gradient);
+            color: var(--white);
+            border: none;
+            border-radius: 15px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(66, 165, 245, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--secondary);
+            color: var(--white);
+            padding: 80px 5% 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 50px;
+        }
+
+        .footer-about .logo {
+            color: var(--white);
+            display: inline-flex;
+            margin-bottom: 20px;
+        }
+
+        .footer-about .logo-text {
+            color: var(--primary);
+        }
+
+        .footer-about p {
+            opacity: 0.8;
+            line-height: 1.8;
+        }
+
+        .footer-links h4 {
+            color: var(--white);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        /* Scroll to Top */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(66, 165, 245, 0.4);
+        }
+
+        /* Animations on Scroll */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Privacy Policy Page Styles */
+        .policy-page {
+            display: none;
+            padding: 120px 5% 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .policy-page.active {
+            display: block;
+        }
+
+        .policy-page h1 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .policy-page .last-updated {
+            color: var(--text);
+            margin-bottom: 30px;
+        }
+
+        .policy-page h2 {
+            color: var(--secondary);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .policy-page h3 {
+            color: var(--secondary);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .policy-page p,
+        .policy-page li {
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .policy-page ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .main-content {
+            display: block;
+        }
+
+        .main-content.hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 120px;
+            }
+
+            .hero-content {
+                max-width: 100%;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .hero-image {
+                margin-top: 50px;
+            }
+
+            .phone-mockup-secondary {
+                display: none;
+            }
+
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .download-container {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+
+            .step-card:not(:last-child)::after {
+                display: none;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .pricing-card.featured:hover {
+                transform: translateY(-10px);
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .floating-card {
+                display: none;
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--white);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .mobile-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu .close-menu {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .mobile-menu ul {
+            list-style: none;
+            text-align: center;
+        }
+
+        .mobile-menu li {
+            margin: 20px 0;
+        }
+
+        .mobile-menu a {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu .lang-switcher {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="#" class="logo" onclick="showMainContent()">
+            <div class="logo-icon"><img src="logo_apartment.png" alt="Homio"></div>
+            <span class="logo-text">Homio</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#apps" data-vi="Sản phẩm" data-en="Products">Sản phẩm</a></li>
+            <li><a href="#features" data-vi="Tính năng" data-en="Features">Tính năng</a></li>
+            <li><a href="#testimonials" data-vi="Đánh giá" data-en="Reviews">Đánh giá</a></li>
+            <li><a href="#contact" data-vi="Liên hệ" data-en="Contact">Liên hệ</a></li>
+            <li><a href="#" onclick="showPrivacyPolicy()" data-vi="Chính sách" data-en="Privacy">Chính sách</a></li>
+            <li>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" onclick="switchLanguage('vi')">VI</button>
+                    <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </li>
+        </ul>
+        <a href="#download" class="nav-btn" data-vi="Dùng Thử Miễn Phí" data-en="Free Trial">Dùng Thử Miễn Phí</a>
+        <div class="menu-toggle" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="close-menu" onclick="toggleMobileMenu()">&times;</button>
+        <ul>
+            <li><a href="#apps" onclick="toggleMobileMenu()" data-vi="Sản phẩm" data-en="Products">Sản phẩm</a></li>
+            <li><a href="#features" onclick="toggleMobileMenu()" data-vi="Tính năng" data-en="Features">Tính năng</a>
+            </li>
+            <li><a href="#testimonials" onclick="toggleMobileMenu()" data-vi="Đánh giá" data-en="Reviews">Đánh giá</a>
+            </li>
+            <li><a href="#contact" onclick="toggleMobileMenu()" data-vi="Liên hệ" data-en="Contact">Liên hệ</a></li>
+            <li><a href="#" onclick="showPrivacyPolicy(); toggleMobileMenu();" data-vi="Chính sách"
+                    data-en="Privacy">Chính sách</a></li>
+            <li><a href="#download" class="nav-btn" onclick="toggleMobileMenu()" data-vi="Dùng Thử"
+                    data-en="Try Free">Dùng Thử</a></li>
+            <li>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" onclick="switchLanguage('vi')">VI</button>
+                    <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <span class="hero-badge" data-vi="🏢 Giải Pháp Quản Lý Căn Hộ #1"
+                    data-en="🏢 #1 Apartment Management Solution">🏢 Giải Pháp Quản Lý Căn Hộ #1</span>
+                <h1 data-vi="Quản Lý Căn Hộ <span>Thông Minh</span> & Hiệu Quả"
+                    data-en="<span>Smart</span> & Efficient Apartment Management">Quản Lý Căn Hộ <span>Thông Minh</span>
+                    & Hiệu Quả</h1>
+                <p data-vi="Homio giúp chủ nhà quản lý căn hộ cho thuê dễ dàng, đồng thời mang đến trải nghiệm sống tiện lợi cho cư dân. Tự động hóa mọi quy trình từ thu tiền thuê đến bảo trì."
+                    data-en="Homio helps landlords manage rental apartments easily while providing residents with a convenient living experience. Automate all processes from rent collection to maintenance.">
+                    Homio giúp chủ nhà quản lý căn hộ cho thuê dễ dàng, đồng thời mang đến trải nghiệm sống tiện lợi cho
+                    cư dân. Tự động hóa mọi quy trình từ thu tiền thuê đến bảo trì.</p>
+                <div class="hero-buttons">
+                    <a href="#download" class="btn-primary">
+                        <i class="fas fa-rocket"></i>
+                        <span data-vi="Bắt Đầu Ngay" data-en="Get Started">Bắt Đầu Ngay</span>
+                    </a>
+                    <a href="#apps" class="btn-secondary">
+                        <i class="fas fa-play"></i>
+                        <span data-vi="Xem Demo" data-en="View Demo">Xem Demo</span>
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <h3>5K+</h3>
+                        <p data-vi="Căn hộ" data-en="Apartments">Căn hộ</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>500+</h3>
+                        <p data-vi="Chủ nhà" data-en="Landlords">Chủ nhà</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>99%</h3>
+                        <p data-vi="Hài lòng" data-en="Satisfied">Hài lòng</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-card card-1">
+                    <div class="floating-card-content">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="floating-card-text">
+                            <span data-vi="+25% Doanh thu" data-en="+25% Revenue">+25% Doanh thu</span>
+                            <small data-vi="So với tháng trước" data-en="vs last month">So với tháng trước</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-mockup">
+                    <img src="APARTMENT.png"
+                        alt="Homio App">
+                </div>
+                <div class="phone-mockup-secondary">
+                    <img src="RESIDENT.png"
+                        alt="Homio Resident App">
+                </div>
+                <div class="floating-card card-2">
+                    <div class="floating-card-content">
+                        <i class="fas fa-bell"></i>
+                        <div class="floating-card-text">
+                            <span data-vi="Thanh toán mới" data-en="New Payment">Thanh toán mới</span>
+                            <small>Phòng 302 - 5tr VND</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="floating-card card-3">
+                    <div class="floating-card-content">
+                        <i class="fas fa-tools"></i>
+                        <div class="floating-card-text">
+                            <span data-vi="Yêu cầu sửa chữa" data-en="Maintenance Request">Yêu cầu sửa chữa</span>
+                            <small data-vi="Đã xử lý xong" data-en="Completed">Đã xử lý xong</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Two Apps Section -->
+        <section class="two-apps" id="apps">
+            <div class="section-header animate-on-scroll">
+                <span class="section-badge" data-vi="Sản Phẩm" data-en="Products">Sản Phẩm</span>
+                <h2 data-vi="Hai Ứng Dụng, Một Hệ Sinh Thái" data-en="Two Apps, One Ecosystem">Hai Ứng Dụng, Một Hệ Sinh
+                    Thái</h2>
+                <p data-vi="Homio cung cấp giải pháp toàn diện với 2 ứng dụng chuyên biệt dành cho chủ nhà và cư dân, kết nối liền mạch trong một hệ sinh thái thống nhất."
+                    data-en="Homio provides a comprehensive solution with 2 specialized apps for landlords and residents, seamlessly connected in a unified ecosystem.">
+                    Homio cung cấp giải pháp toàn diện với 2 ứng dụng chuyên biệt dành cho chủ nhà và cư dân, kết nối
+                    liền mạch trong một hệ sinh thái thống nhất.</p>
+            </div>
+            <div class="apps-grid">
+                <div class="app-card landlord animate-on-scroll">
+                    <div class="app-card-icon">
+                        <img src="logo_apartment.png" alt="Homio">
+                    </div>
+                    <h3>Homio</h3>
+                    <p class="app-subtitle" data-vi="Dành cho Chủ nhà & Quản lý" data-en="For Landlords & Managers">Dành
+                        cho Chủ nhà & Quản lý</p>
+                    <p data-vi="Quản lý toàn bộ căn hộ cho thuê một cách chuyên nghiệp. Theo dõi doanh thu, hợp đồng, và tương tác với cư dân trong một ứng dụng duy nhất."
+                        data-en="Professionally manage all your rental apartments. Track revenue, contracts, and interact with residents in one app.">
+                        Quản lý toàn bộ căn hộ cho thuê một cách chuyên nghiệp. Theo dõi doanh thu, hợp đồng, và tương
+                        tác với cư dân trong một ứng dụng duy nhất.</p>
+                    <ul class="app-features-list">
+                        <li><i class="fas fa-check"></i> <span data-vi="Quản lý căn hộ & phòng"
+                                data-en="Apartment & room management">Quản lý căn hộ & phòng</span></li>
+                        <li><i class="fas fa-check"></i> <span data-vi="Theo dõi thu chi tự động"
+                                data-en="Automatic income tracking">Theo dõi thu chi tự động</span></li>
+                        <li><i class="fas fa-check"></i> <span data-vi="Quản lý hợp đồng điện tử"
+                                data-en="Digital contract management">Quản lý hợp đồng điện tử</span></li>
+                        <li><i class="fas fa-check"></i> <span data-vi="Nhắc nhở thanh toán tự động"
+                                data-en="Automatic payment reminders">Nhắc nhở thanh toán tự động</span></li>
+                        <li><i class="fas fa-check"></i> <span data-vi="Báo cáo doanh thu chi tiết"
+                                data-en="Detailed revenue reports">Báo cáo doanh thu chi tiết</span></li>
+                    </ul>
+                    <a href="#download" class="app-card-btn">
+                        <span data-vi="Tải Homio" data-en="Download Homio">Tải Homio</span> <i
+                            class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="app-card resident animate-on-scroll">
+                    <div class="app-card-icon">
+                        <img src="Logo_tenants.png" alt="Homio Resident">
+                    </div>
+                    <h3>Homio Resident</h3>
+                    <p class="app-subtitle" data-vi="Dành cho Cư dân" data-en="For Residents">Dành cho Cư dân</p>
+                    <p data-vi="Trải nghiệm sống tiện lợi với mọi thứ trong tầm tay. Thanh toán tiền thuê, gửi yêu cầu bảo trì và nhận thông báo dễ dàng."
+                        data-en="Experience convenient living with everything at your fingertips. Pay rent, submit maintenance requests, and receive notifications easily.">
+                        Trải nghiệm sống tiện lợi với mọi thứ trong tầm tay. Thanh toán tiền thuê, gửi yêu cầu bảo trì
+                        và nhận thông báo dễ dàng.</p>
+                    <ul class="app-features-list">
+                        <li><i class="fas fa-check"></i> <span data-vi="Thanh toán tiền thuê online"
+                                data-en="Online rent payment">Thanh toán tiền thuê online</span></li>
+                        <li><i class="fas fa-check"></i> <span data-vi="Gửi yêu cầu bảo trì"
+                                data-en="Submit maintenance requests">Gửi yêu cầu bảo trì</span></li>
+                        <li><i class="fas fa-check"></i> <span data-vi="Xem hợp đồng & hóa đơn"
+                                data-en="View contracts & invoices">Xem hợp đồng & hóa đơn</span></li>
+                        <li><i class="fas fa-check"></i> <span data-vi="Nhận thông báo từ chủ nhà"
+                                data-en="Receive landlord notifications">Nhận thông báo từ chủ nhà</span></li>
+                        <li><i class="fas fa-check"></i> <span data-vi="Chat trực tiếp hỗ trợ"
+                                data-en="Direct chat support">Chat trực tiếp hỗ trợ</span></li>
+                    </ul>
+                    <a href="#download" class="app-card-btn">
+                        <span data-vi="Tải Resident" data-en="Download Resident">Tải Resident</span> <i
+                            class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="section-header animate-on-scroll">
+                <span class="section-badge" data-vi="Tính Năng" data-en="Features">Tính Năng</span>
+                <h2 data-vi="Mọi Thứ Bạn Cần Để Quản Lý" data-en="Everything You Need to Manage">Mọi Thứ Bạn Cần Để Quản
+                    Lý</h2>
+                <p data-vi="Homio tích hợp đầy đủ công cụ giúp bạn quản lý căn hộ một cách chuyên nghiệp và tiết kiệm thời gian."
+                    data-en="Homio integrates all the tools you need to manage apartments professionally and save time.">
+                    Homio tích hợp đầy đủ công cụ giúp bạn quản lý căn hộ một cách chuyên nghiệp và tiết kiệm thời gian.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3 data-vi="Quản Lý Thu Chi" data-en="Income Management">Quản Lý Thu Chi</h3>
+                    <p data-vi="Theo dõi tiền thuê, điện nước, dịch vụ. Tự động tính toán và nhắc nhở thanh toán đúng hạn."
+                        data-en="Track rent, utilities, and services. Automatic calculation and payment reminders on time.">
+                        Theo dõi tiền thuê, điện nước, dịch vụ. Tự động tính toán và nhắc nhở thanh toán đúng hạn.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3 data-vi="Hợp Đồng Điện Tử" data-en="Digital Contracts">Hợp Đồng Điện Tử</h3>
+                    <p data-vi="Tạo, ký kết và lưu trữ hợp đồng số. Tự động nhắc nhở khi hợp đồng sắp hết hạn."
+                        data-en="Create, sign, and store digital contracts. Automatic reminders when contracts are expiring.">
+                        Tạo, ký kết và lưu trữ hợp đồng số. Tự động nhắc nhở khi hợp đồng sắp hết hạn.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 data-vi="Quản Lý Cư Dân" data-en="Resident Management">Quản Lý Cư Dân</h3>
+                    <p data-vi="Lưu trữ thông tin cư dân, lịch sử thuê và tương tác trong một hệ thống tập trung."
+                        data-en="Store resident information, rental history, and interactions in a centralized system.">
+                        Lưu trữ thông tin cư dân, lịch sử thuê và tương tác trong một hệ thống tập trung.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3 data-vi="Yêu Cầu Bảo Trì" data-en="Maintenance Requests">Yêu Cầu Bảo Trì</h3>
+                    <p data-vi="Cư dân gửi yêu cầu, chủ nhà nhận thông báo và theo dõi tiến độ xử lý realtime."
+                        data-en="Residents submit requests, landlords receive notifications and track progress in real-time.">
+                        Cư dân gửi yêu cầu, chủ nhà nhận thông báo và theo dõi tiến độ xử lý realtime.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h3 data-vi="Báo Cáo Thống Kê" data-en="Statistics & Reports">Báo Cáo Thống Kê</h3>
+                    <p data-vi="Dashboard trực quan với báo cáo doanh thu, tỷ lệ lấp đầy, và phân tích xu hướng."
+                        data-en="Visual dashboard with revenue reports, occupancy rates, and trend analysis.">Dashboard
+                        trực quan với báo cáo doanh thu, tỷ lệ lấp đầy, và phân tích xu hướng.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 data-vi="Thông Báo Thông Minh" data-en="Smart Notifications">Thông Báo Thông Minh</h3>
+                    <p data-vi="Gửi thông báo hàng loạt hoặc cá nhân đến cư dân. Lên lịch thông báo tự động."
+                        data-en="Send bulk or individual notifications to residents. Schedule automatic notifications.">
+                        Gửi thông báo hàng loạt hoặc cá nhân đến cư dân. Lên lịch thông báo tự động.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works" id="how-it-works">
+            <div class="section-header animate-on-scroll">
+                <span class="section-badge" data-vi="Bắt Đầu" data-en="Get Started">Bắt Đầu</span>
+                <h2 data-vi="Dễ Dàng Trong 4 Bước" data-en="Easy in 4 Steps">Dễ Dàng Trong 4 Bước</h2>
+                <p data-vi="Thiết lập Homio cho tòa nhà của bạn chỉ trong vài phút"
+                    data-en="Set up Homio for your building in just a few minutes">Thiết lập Homio cho tòa nhà của bạn
+                    chỉ trong vài phút</p>
+            </div>
+            <div class="steps-container">
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">01</div>
+                    <h3 data-vi="Đăng Ký" data-en="Sign Up">Đăng Ký</h3>
+                    <p data-vi="Tạo tài khoản miễn phí và nhập thông tin cơ bản về tòa nhà của bạn."
+                        data-en="Create a free account and enter basic information about your building.">Tạo tài khoản
+                        miễn phí và nhập thông tin cơ bản về tòa nhà của bạn.</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">02</div>
+                    <h3 data-vi="Thêm Căn Hộ" data-en="Add Apartments">Thêm Căn Hộ</h3>
+                    <p data-vi="Nhập danh sách căn hộ, phòng và thiết lập giá thuê, dịch vụ."
+                        data-en="Enter apartment list, rooms, and set up rent prices and services.">Nhập danh sách căn
+                        hộ, phòng và thiết lập giá thuê, dịch vụ.</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">03</div>
+                    <h3 data-vi="Mời Cư Dân" data-en="Invite Residents">Mời Cư Dân</h3>
+                    <p data-vi="Gửi lời mời để cư dân tải app Homio Resident và kết nối."
+                        data-en="Send invitations for residents to download Homio Resident and connect.">Gửi lời mời để
+                        cư dân tải app Homio Resident và kết nối.</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">04</div>
+                    <h3 data-vi="Quản Lý" data-en="Manage">Quản Lý</h3>
+                    <p data-vi="Bắt đầu quản lý thu chi, hợp đồng và tương tác với cư dân."
+                        data-en="Start managing income, contracts, and interact with residents.">Bắt đầu quản lý thu
+                        chi, hợp đồng và tương tác với cư dân.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section class="benefits">
+            <div class="section-header animate-on-scroll">
+                <span class="section-badge" data-vi="Lợi Ích" data-en="Benefits">Lợi Ích</span>
+                <h2 data-vi="Tại Sao Chọn Homio?" data-en="Why Choose Homio?">Tại Sao Chọn Homio?</h2>
+                <p data-vi="Homio giúp bạn tiết kiệm thời gian, tăng hiệu quả quản lý và nâng cao sự hài lòng của cư dân."
+                    data-en="Homio helps you save time, increase management efficiency, and improve resident satisfaction.">
+                    Homio giúp bạn tiết kiệm thời gian, tăng hiệu quả quản lý và nâng cao sự hài lòng của cư dân.</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card animate-on-scroll">
+                    <div class="benefit-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 data-vi="Tiết Kiệm 70% Thời Gian" data-en="Save 70% Time">Tiết Kiệm 70% Thời Gian</h3>
+                    <p data-vi="Tự động hóa các công việc lặp lại như nhắc nhở thanh toán, tính tiền điện nước."
+                        data-en="Automate repetitive tasks like payment reminders and utility calculations.">Tự động hóa
+                        các công việc lặp lại như nhắc nhở thanh toán, tính tiền điện nước.</p>
+                </div>
+                <div class="benefit-card animate-on-scroll">
+                    <div class="benefit-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h3 data-vi="Giảm Nợ Xấu" data-en="Reduce Bad Debts">Giảm Nợ Xấu</h3>
+                    <p data-vi="Hệ thống nhắc nhở tự động giúp cư dân thanh toán đúng hạn, giảm thiểu công nợ."
+                        data-en="Automatic reminder system helps residents pay on time, minimizing debt.">Hệ thống nhắc
+                        nhở tự động giúp cư dân thanh toán đúng hạn, giảm thiểu công nợ.</p>
+                </div>
+                <div class="benefit-card animate-on-scroll">
+                    <div class="benefit-icon">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <h3 data-vi="Cư Dân Hài Lòng" data-en="Happy Residents">Cư Dân Hài Lòng</h3>
+                    <p data-vi="Xử lý yêu cầu nhanh chóng, giao tiếp minh bạch tạo trải nghiệm sống tốt hơn."
+                        data-en="Quick request handling and transparent communication create a better living experience.">
+                        Xử lý yêu cầu nhanh chóng, giao tiếp minh bạch tạo trải nghiệm sống tốt hơn.</p>
+                </div>
+                <div class="benefit-card animate-on-scroll">
+                    <div class="benefit-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 data-vi="Quản Lý Mọi Lúc" data-en="Manage Anytime">Quản Lý Mọi Lúc</h3>
+                    <p data-vi="Truy cập từ điện thoại, quản lý căn hộ từ bất cứ đâu."
+                        data-en="Access from phone, manage apartments from anywhere.">Truy cập từ điện thoại, quản lý căn hộ từ bất cứ đâu.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials" id="testimonials">
+            <div class="section-header animate-on-scroll">
+                <span class="section-badge" data-vi="Đánh Giá" data-en="Reviews">Đánh Giá</span>
+                <h2 data-vi="Khách Hàng Nói Gì?" data-en="What Customers Say?">Khách Hàng Nói Gì?</h2>
+                <p data-vi="Hàng trăm chủ nhà đã tin tưởng sử dụng Homio" data-en="Hundreds of landlords trust Homio">
+                    Hàng trăm chủ nhà đã tin tưởng sử dụng Homio</p>
+            </div>
+            <div class="testimonials-slider animate-on-scroll">
+                <div class="testimonial-card active">
+                    <div class="testimonial-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text"
+                        data-vi="&quot;Trước đây tôi quản lý 20 căn hộ bằng sổ sách và Excel, rất mất thời gian. Từ khi dùng Homio, mọi thứ được tự động hóa. Cư dân cũng rất thích vì thanh toán online tiện lợi.&quot;"
+                        data-en="&quot;Previously, I managed 20 apartments with books and Excel, which was very time-consuming. Since using Homio, everything is automated. Residents also love it because online payment is convenient.&quot;">
+                        "Trước đây tôi quản lý 20 căn hộ bằng sổ sách và Excel, rất mất thời gian. Từ khi dùng Homio,
+                        mọi thứ được tự động hóa. Cư dân cũng rất thích vì thanh toán online tiện lợi."</p>
+                    <div class="testimonial-author">
+                        <h4>Nguyễn Văn Minh</h4>
+                        <p data-vi="Chủ tòa nhà 20 căn hộ, Hà Nội" data-en="Owner of 20 apartments, Hanoi">Chủ tòa nhà
+                            20 căn hộ, Hà Nội</p>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text"
+                        data-vi="&quot;Tính năng báo cáo doanh thu giúp tôi nắm rõ tình hình kinh doanh. Đặc biệt, việc gửi thông báo hàng loạt đến cư dân rất tiện lợi khi có thông tin quan trọng.&quot;"
+                        data-en="&quot;The revenue report feature helps me clearly understand my business situation. Especially, sending bulk notifications to residents is very convenient for important information.&quot;">
+                        "Tính năng báo cáo doanh thu giúp tôi nắm rõ tình hình kinh doanh. Đặc biệt, việc gửi thông báo
+                        hàng loạt đến cư dân rất tiện lợi khi có thông tin quan trọng."</p>
+                    <div class="testimonial-author">
+                        <h4>Trần Thị Hương</h4>
+                        <p data-vi="Quản lý 35 căn hộ, TP.HCM" data-en="Managing 35 apartments, HCMC">Quản lý 35 căn hộ,
+                            TP.HCM</p>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text"
+                        data-vi="&quot;Là cư dân, tôi rất thích app Homio Resident. Thanh toán tiền thuê chỉ vài click, gửi yêu cầu sửa chữa cũng rất dễ. Chủ nhà phản hồi nhanh hơn nhiều so với trước.&quot;"
+                        data-en="&quot;As a resident, I really like the Homio Resident app. Paying rent takes just a few clicks, submitting repair requests is also very easy. The landlord responds much faster than before.&quot;">
+                        "Là cư dân, tôi rất thích app Homio Resident. Thanh toán tiền thuê chỉ vài click, gửi yêu cầu
+                        sửa chữa cũng rất dễ. Chủ nhà phản hồi nhanh hơn nhiều so với trước."</p>
+                    <div class="testimonial-author">
+                        <h4>Lê Hoàng Nam</h4>
+                        <p data-vi="Cư dân, Đà Nẵng" data-en="Resident, Da Nang">Cư dân, Đà Nẵng</p>
+                    </div>
+                </div>
+                <div class="testimonial-nav">
+                    <button onclick="changeTestimonial(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <button onclick="changeTestimonial(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="testimonial-dots">
+                    <span class="active" onclick="goToTestimonial(0)"></span>
+                    <span onclick="goToTestimonial(1)"></span>
+                    <span onclick="goToTestimonial(2)"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <section class="download" id="download">
+            <div class="section-header animate-on-scroll">
+                <span class="section-badge" data-vi="Tải App" data-en="Download">Tải App</span>
+                <h2 data-vi="Bắt Đầu Sử Dụng Ngay" data-en="Start Using Now">Bắt Đầu Sử Dụng Ngay</h2>
+                <p data-vi="Tải ứng dụng phù hợp với vai trò của bạn" data-en="Download the app that fits your role">Tải
+                    ứng dụng phù hợp với vai trò của bạn</p>
+            </div>
+            <div class="download-container">
+                <div class="download-app landlord-app animate-on-scroll">
+                    <div class="download-app-icon">
+                        <img src="logo_apartment.png" alt="Homio Logo">
+                    </div>
+                    <h3>Homio</h3>
+                    <p data-vi="Dành cho chủ nhà và quản lý tòa nhà" data-en="For landlords and building managers">Dành
+                        cho chủ nhà và quản lý tòa nhà</p>
+                    <div class="download-buttons">
+                        <a href="#" class="store-btn">
+                            <i class="fab fa-apple"></i>
+                            <div>
+                                <small data-vi="Tải về trên" data-en="Download on">Tải về trên</small>
+                                <span>App Store</span>
+                            </div>
+                        </a>
+                        <a href="#" class="store-btn">
+                            <i class="fab fa-google-play"></i>
+                            <div>
+                                <small data-vi="Tải về trên" data-en="Get it on">Tải về trên</small>
+                                <span>Google Play</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="download-app resident-app animate-on-scroll">
+                    <div class="download-app-icon">
+                        <img src="Logo_tenants.png" alt="Homio Resident Logo">
+                    </div>
+                    <h3>Homio Resident</h3>
+                    <p data-vi="Dành cho cư dân và người thuê nhà" data-en="For residents and tenants">Dành cho cư dân
+                        và người thuê nhà</p>
+                    <div class="download-buttons">
+                        <a href="#" class="store-btn">
+                            <i class="fab fa-apple"></i>
+                            <div>
+                                <small data-vi="Tải về trên" data-en="Download on">Tải về trên</small>
+                                <span>App Store</span>
+                            </div>
+                        </a>
+                        <a href="#" class="store-btn">
+                            <i class="fab fa-google-play"></i>
+                            <div>
+                                <small data-vi="Tải về trên" data-en="Get it on">Tải về trên</small>
+                                <span>Google Play</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact" id="contact">
+            <div class="contact-container">
+                <div class="contact-info animate-on-scroll">
+                    <h3 data-vi="Liên Hệ Với Chúng Tôi" data-en="Contact Us">Liên Hệ Với Chúng Tôi</h3>
+                    <p data-vi="Có câu hỏi về Homio? Đội ngũ của chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7."
+                        data-en="Have questions about Homio? Our team is always ready to help you 24/7.">Có câu hỏi về
+                        Homio? Đội ngũ của chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7.</p>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4 data-vi="Địa chỉ" data-en="Address">Địa chỉ</h4>
+                            <p>138 Nguyen Hien Le, Hoa Xuan, Cam Le, Da Nang</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <h4>Hotline</h4>
+                            <p>+84 876666634</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>contact@danaexperts.com</p>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <form class="contact-form animate-on-scroll">
+                    <div class="form-group">
+                        <label data-vi="Họ và tên" data-en="Full Name">Họ và tên</label>
+                        <input type="text" placeholder="" data-placeholder-vi="Nhập họ và tên"
+                            data-placeholder-en="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" placeholder="" data-placeholder-vi="Nhập email"
+                            data-placeholder-en="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label data-vi="Bạn là" data-en="You are">Bạn là</label>
+                        <select>
+                            <option value="" data-vi="Chọn vai trò" data-en="Select role">Chọn vai trò</option>
+                            <option value="landlord" data-vi="Chủ nhà / Quản lý" data-en="Landlord / Manager">Chủ nhà /
+                                Quản lý</option>
+                            <option value="resident" data-vi="Cư dân" data-en="Resident">Cư dân</option>
+                            <option value="other" data-vi="Khác" data-en="Other">Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label data-vi="Tin nhắn" data-en="Message">Tin nhắn</label>
+                        <textarea placeholder="" data-placeholder-vi="Nhập nội dung tin nhắn..."
+                            data-placeholder-en="Enter your message..."></textarea>
+                    </div>
+                    <button type="submit" class="form-btn" data-vi="Gửi Tin Nhắn" data-en="Send Message">Gửi Tin
+                        Nhắn</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <a href="#" class="logo">
+                        <div class="logo-icon"><img src="logo_apartment.png" alt="Homio"></div>
+                        <span class="logo-text">Homio</span>
+                    </a>
+                    <p data-vi="Homio là nền tảng quản lý căn hộ cho thuê hàng đầu Việt Nam. Chúng tôi kết nối chủ nhà và cư dân, mang đến trải nghiệm quản lý và sinh sống hiện đại, tiện lợi."
+                        data-en="Homio is Vietnam's leading rental apartment management platform. We connect landlords and residents, providing a modern and convenient management and living experience.">
+                        Homio là nền tảng quản lý căn hộ cho thuê hàng đầu Việt Nam. Chúng tôi kết nối chủ nhà và cư
+                        dân, mang đến trải nghiệm quản lý và sinh sống hiện đại, tiện lợi.</p>
+                </div>
+                <div class="footer-links">
+                    <h4 data-vi="Sản Phẩm" data-en="Products">Sản Phẩm</h4>
+                    <ul>
+                        <li><a href="#" data-vi="Homio cho Chủ nhà" data-en="Homio for Landlords">Homio cho Chủ nhà</a>
+                        </li>
+                        <li><a href="#">Homio Resident</a></li>
+                        <li><a href="#features" data-vi="Tính năng" data-en="Features">Tính năng</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4 data-vi="Hỗ Trợ" data-en="Support">Hỗ Trợ</h4>
+                    <ul>
+                        <li><a href="#" data-vi="Trung tâm hỗ trợ" data-en="Help Center">Trung tâm hỗ trợ</a></li>
+                        <li><a href="#" data-vi="Hướng dẫn sử dụng" data-en="User Guide">Hướng dẫn sử dụng</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#contact" data-vi="Liên hệ" data-en="Contact">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4 data-vi="Công Ty" data-en="Company">Công Ty</h4>
+                    <ul>
+                        <li><a href="#" data-vi="Về chúng tôi" data-en="About Us">Về chúng tôi</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#" onclick="showPrivacyPolicy()" data-vi="Chính sách bảo mật"
+                                data-en="Privacy Policy">Chính sách bảo mật</a></li>
+                        <li><a href="#" data-vi="Điều khoản" data-en="Terms">Điều khoản</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Homio by DanaExperts. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Privacy Policy Page -->
+    <div class="policy-page" id="policyPage">
+        <h1>Privacy Policy for Homio & Homio Resident</h1>
+        <p class="last-updated">Last updated: February 7, 2026</p>
+
+        <p>This Privacy Policy describes Our policies and procedures on the collection, use, and disclosure of Your
+            information when You use the Homio and Homio Resident applications (collectively, the "Service") and tells
+            You about Your privacy rights and how the law protects You.</p>
+        <p>We use Your Personal Data to provide and improve the Service. By using the Service, You agree to the
+            collection and use of information in accordance with this Privacy Policy.</p>
+
+        <h2>Interpretation and Definitions</h2>
+        <h3>Interpretation</h3>
+        <p>The words of which the initial letter is capitalized have meanings defined under the following conditions.
+            The following definitions shall have the same meaning regardless of whether they appear in singular or in
+            plural.</p>
+
+        <h3>Definitions</h3>
+        <p>For the purposes of this Privacy Policy:</p>
+        <ul>
+            <li><strong>Account</strong> means a unique account created for You to access our Service or parts of our
+                Service.</li>
+            <li><strong>Application</strong> refers to Homio (for landlords and property managers) and Homio Resident
+                (for tenants and residents), the mobile applications provided by the Company.</li>
+            <li><strong>Company</strong> (referred to as either "the Company", "We", "Us" or "Our" in this Agreement)
+                refers to DanaExperts, 8 Nguyen Hien Le Street, Hoa Xuan Ward, Cam Le District, Da Nang City, Vietnam.
+            </li>
+            <li><strong>Country</strong> refers to: Vietnam</li>
+            <li><strong>Device</strong> means any device that can access the Service such as a computer, a cellphone or
+                a digital tablet.</li>
+            <li><strong>Personal Data</strong> is any information that relates to an identified or identifiable
+                individual.</li>
+            <li><strong>Service</strong> refers to the Application.</li>
+            <li><strong>Service Provider</strong> means any natural or legal person who processes the data on behalf of
+                the Company.</li>
+            <li><strong>Usage Data</strong> refers to data collected automatically, either generated by the use of the
+                Service or from the Service infrastructure itself.</li>
+            <li><strong>User-Provided Data</strong> refers to data that You voluntarily enter into the Application, such
+                as tenant information, residence registration details, and billing records.</li>
+            <li><strong>You</strong> means the individual accessing or using the Service, or the company, or other legal
+                entity on behalf of which such individual is accessing or using the Service.</li>
+        </ul>
+
+        <h2>Collecting and Using Your Personal Data</h2>
+        <h3>Types of Data Collected</h3>
+
+        <h4>Personal Data</h4>
+        <p>While using Our Service, We may ask You to provide Us with certain personally identifiable information that
+            can be used to contact or identify You. Personally identifiable information may include, but is not limited
+            to:</p>
+        <ul>
+            <li>Name</li>
+            <li>Email address</li>
+            <li>Phone number</li>
+            <li>Account credentials (password is stored in encrypted form)</li>
+            <li>Profile photo (if provided)</li>
+            <li>Usage Data</li>
+        </ul>
+
+        <h4>User-Provided Data</h4>
+        <p>The Application allows users to enter and manage information related to apartment rental management. This
+            data may include:</p>
+        <ul>
+            <li>Tenant and resident information (name, contact details)</li>
+            <li>Temporary residence registration data</li>
+            <li>Billing and invoice information</li>
+            <li>Apartment and room details</li>
+            <li>Maintenance and feedback requests</li>
+            <li>Photos uploaded for profile, identification, or maintenance requests</li>
+        </ul>
+        <p>This User-Provided Data is stored securely on our servers and is used solely for providing the core
+            functionality of the Service. All User-Provided Data is linked to Your Account.</p>
+
+        <h4>Usage Data</h4>
+        <p>Usage Data is collected automatically when using the Service. Usage Data may include information such as Your
+            Device's Internet Protocol address (e.g. IP address), the type of mobile device You use, Your mobile device
+            unique ID, Your mobile operating system, unique device identifiers, language preferences, and other
+            diagnostic data.</p>
+
+        <h4>Push Notifications</h4>
+        <p>We may send You push notifications to alert You about payment reminders, maintenance updates, and other
+            Service-related information. You can opt out of receiving push notifications through Your device settings at
+            any time. We collect device tokens solely for the purpose of delivering these notifications.</p>
+
+        <h4>Camera and Photo Library</h4>
+        <p>The Application may request access to Your device's camera and photo library for the purpose of uploading
+            profile photos, identification documents, or images related to maintenance requests. Photos are only
+            accessed when You explicitly choose to take or select a photo within the Application.</p>
+
+        <h2>Data Linked to Your Account</h2>
+        <p>All personal data collected or provided through the Application is linked to Your user account. This includes
+            Your name, email address, phone number, and all User-Provided Data such as tenant information, residence
+            registration details, and billing records. This data is used only for providing the Service functionality
+            and Account management purposes. We do not use this data for tracking or advertising.</p>
+
+        <h2>Use of Your Personal Data</h2>
+        <p>The Company may use Personal Data for the following purposes:</p>
+        <ul>
+            <li><strong>To provide and maintain our Service:</strong> including apartment management, billing, tenant
+                management, and residence registration features.</li>
+            <li><strong>To manage Your Account:</strong> to manage Your registration as a user of the Service,
+                authenticate Your identity, and maintain Your account security.</li>
+            <li><strong>To contact You:</strong> To contact You by email, push notifications, or other forms of
+                electronic communication regarding payment reminders, service updates, or account-related matters.</li>
+            <li><strong>To manage Your requests:</strong> To attend and manage Your requests, feedback, and maintenance
+                reports submitted through the Service.</li>
+            <li><strong>To improve the Service:</strong> To understand how the Service is used, identify issues, and
+                improve the user experience.</li>
+        </ul>
+        <p>We do <strong>NOT</strong> use Your Personal Data for advertising, tracking, or sharing with third-party
+            advertisers.</p>
+
+        <h2>Sharing of Your Personal Data</h2>
+        <p>We may share Your Personal Data in the following limited situations:</p>
+        <ul>
+            <li><strong>Between landlords and tenants:</strong> Certain information (such as name, apartment details,
+                and billing information) is shared between landlords using Homio and tenants using Homio Resident to
+                enable the core rental management functionality.</li>
+            <li><strong>With Service Providers:</strong> We may share Your Personal Data with Service Providers to
+                monitor and analyze the use of our Service, and to provide cloud hosting and infrastructure services.
+            </li>
+            <li><strong>With Your consent:</strong> We may disclose Your Personal Data for any other purpose with Your
+                explicit consent.</li>
+            <li><strong>As required by law:</strong> We may disclose Your Personal Data if required to do so by law or
+                in response to valid requests by public authorities.</li>
+        </ul>
+
+        <h2>Retention of Your Personal Data</h2>
+        <p>The Company will retain Your Personal Data only for as long as is necessary for the purposes set out in this
+            Privacy Policy. Specifically:</p>
+        <ul>
+            <li>Account data is retained for as long as Your account is active.</li>
+            <li>User-Provided Data (tenant info, invoices, residence records) is retained for as long as Your account is
+                active or as required for legal compliance.</li>
+            <li>Usage Data is retained for a shorter period, unless used to strengthen security or improve the Service.
+            </li>
+        </ul>
+        <p>When You delete Your account, We will delete or anonymize Your Personal Data within 30 days, except where
+            retention is required by law.</p>
+
+        <h2>Transfer of Your Personal Data</h2>
+        <p>Your information, including Personal Data, is processed at the Company's operating offices and cloud servers.
+            Your data may be transferred to and maintained on servers located outside of Your jurisdiction where data
+            protection laws may differ. By using the Service, You consent to this transfer.</p>
+
+        <h2>Delete Your Personal Data</h2>
+        <p>You have the right to delete or request that We assist in deleting the Personal Data that We have collected
+            about You.</p>
+        <ul>
+            <li>You may update or delete certain information from within the Application's account settings.</li>
+            <li>You may request complete account deletion by contacting Us at the email address provided below.</li>
+            <li>Upon account deletion, all Personal Data and User-Provided Data associated with Your account will be
+                permanently removed within 30 days.</li>
+        </ul>
+
+        <h2>Security of Your Personal Data</h2>
+        <p>The security of Your Personal Data is important to Us. We implement industry-standard security measures
+            including:</p>
+        <ul>
+            <li>Encrypted data transmission (HTTPS/TLS)</li>
+            <li>Encrypted password storage</li>
+            <li>Secure token-based authentication</li>
+            <li>Regular security assessments</li>
+        </ul>
+        <p>However, no method of transmission over the Internet or method of electronic storage is 100% secure. While We
+            strive to use commercially acceptable means to protect Your Personal Data, We cannot guarantee its absolute
+            security.</p>
+
+        <h2>Children's Privacy</h2>
+        <p>Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable
+            information from anyone under the age of 13. If You are a parent or guardian and You are aware that Your
+            child has provided Us with Personal Data, please contact Us so that We can take necessary action.</p>
+
+        <h2>Changes to this Privacy Policy</h2>
+        <p>We may update Our Privacy Policy from time to time. We will notify You of any changes by posting the new
+            Privacy Policy on this page and updating the "Last updated" date. For significant changes, We will notify
+            You via email or a prominent notice within the Application prior to the change becoming effective.</p>
+
+        <h2>Contact Us</h2>
+        <p>If you have any questions about this Privacy Policy, You can contact us:</p>
+        <ul>
+            <li>By email: danaexperts.dev@gmail.com</li>
+            <li>Address: 8 Nguyen Hien Le Street, Hoa Xuan Ward, Cam Le District, Da Nang City, Vietnam</li>
+        </ul>
+
+        <div style="margin-top: 40px;">
+            <a href="#" onclick="showMainContent()" class="btn-primary">
+                <i class="fas fa-arrow-left"></i>
+                <span data-vi="Quay lại trang chủ" data-en="Back to Home">Quay lại trang chủ</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop" onclick="scrollToTop()">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        let currentLang = 'vi';
+
+        // Language Switcher
+        function switchLanguage(lang) {
+            currentLang = lang;
+
+            // Update language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === lang.toUpperCase()) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update all text content
+            document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+                const text = el.getAttribute('data-' + lang);
+                if (text) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        // Skip - handle placeholders separately
+                    } else {
+                        el.innerHTML = text;
+                    }
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-placeholder-' + lang + ']').forEach(el => {
+                el.placeholder = el.getAttribute('data-placeholder-' + lang);
+            });
+
+            // Update select options
+            document.querySelectorAll('select option').forEach(option => {
+                const text = option.getAttribute('data-' + lang);
+                if (text) {
+                    option.textContent = text;
+                }
+            });
+        }
+
+        // Show Privacy Policy
+        function showPrivacyPolicy() {
+            document.getElementById('mainContent').classList.add('hidden');
+            document.getElementById('policyPage').classList.add('active');
+            window.scrollTo(0, 0);
+            return false;
+        }
+
+        // Show Main Content
+        function showMainContent() {
+            document.getElementById('mainContent').classList.remove('hidden');
+            document.getElementById('policyPage').classList.remove('active');
+            window.scrollTo(0, 0);
+            return false;
+        }
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function () {
+            const navbar = document.querySelector('.navbar');
+            const scrollTop = document.getElementById('scrollTop');
+
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            if (window.scrollY > 300) {
+                scrollTop.classList.add('visible');
+            } else {
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('active');
+        }
+
+        // Scroll to Top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Testimonials Slider
+        let currentTestimonial = 0;
+        const testimonials = document.querySelectorAll('.testimonial-card');
+        const dots = document.querySelectorAll('.testimonial-dots span');
+
+        function showTestimonial(index) {
+            testimonials.forEach(t => t.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+
+            if (index >= testimonials.length) currentTestimonial = 0;
+            if (index < 0) currentTestimonial = testimonials.length - 1;
+
+            testimonials[currentTestimonial].classList.add('active');
+            dots[currentTestimonial].classList.add('active');
+        }
+
+        function changeTestimonial(direction) {
+            currentTestimonial += direction;
+            showTestimonial(currentTestimonial);
+        }
+
+        function goToTestimonial(index) {
+            currentTestimonial = index;
+            showTestimonial(currentTestimonial);
+        }
+
+        // Auto-slide testimonials
+        setInterval(() => {
+            changeTestimonial(1);
+        }, 5000);
+
+        // Animate on Scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Counter Animation
+        function animateCounter(element, target, suffix = '') {
+            let current = 0;
+            const increment = target / 40;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    clearInterval(timer);
+                    current = target;
+                }
+                element.textContent = Math.floor(current) + suffix;
+            }, 30);
+        }
+
+        // Start counter animation when hero section is visible
+        const heroStats = document.querySelector('.hero-stats');
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const stats = entry.target.querySelectorAll('.stat-item h3');
+                    animateCounter(stats[0], 5, 'K+');
+                    animateCounter(stats[1], 500, '+');
+                    animateCounter(stats[2], 99, '%');
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statsObserver.observe(heroStats);
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        showMainContent();
+                        setTimeout(() => {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }, 100);
+                    }
+                }
+            });
+        });
+
+        // Form submission
+        document.querySelector('.contact-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const message = currentLang === 'vi'
+                ? 'Cảm ơn bạn đã liên hệ! Đội ngũ Homio sẽ phản hồi trong thời gian sớm nhất.'
+                : 'Thank you for contacting us! The Homio team will respond as soon as possible.';
+            alert(message);
+            this.reset();
+        });
+
+        // Parallax effect on hero
+        window.addEventListener('scroll', function () {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                const heroImage = hero.querySelector('.hero-image');
+                if (heroImage && scrolled < window.innerHeight) {
+                    heroImage.style.transform = `translateY(${scrolled * 0.1}px)`;
+                }
+            }
+        });
+
+        // Initialize placeholders on load
+        document.addEventListener('DOMContentLoaded', function () {
+            switchLanguage('vi');
+        });
+    </script>
+</body>
+
+</html>
